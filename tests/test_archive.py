@@ -4,26 +4,24 @@ from stored import Archive, Storage
 
 
 @pytest.fixture
-def sample_targz_file():
-    with open('tests/files/foo.tar.gz', 'rb') as file:
-        return file
+def sample_targz_path():
+    return 'tests/files/foo.tar.gz'
 
 
 @pytest.fixture
-def sample_zip_file():
-    with open('tests/files/foo.zip', 'rb') as file:
-        return file
+def sample_zip_path():
+    return 'tests/files/foo.zip'
 
 
-def test_extract_targz_from_http(temp_dir, sample_targz_file):
-    Archive(sample_targz_file).extract(temp_dir)
-    actual = Storage(temp_dir).list_files(relative=True)
+def test_extract_targz(temp_dir, sample_targz_path):
+    Archive(sample_targz_path).extract(temp_dir)
+    actual = Storage(temp_dir).list(relative=True)
     expected = ['bar.txt', 'baz/foo.txt']
     assert sorted(actual) == sorted(expected)
 
 
-def test_extract_zip_from_http(temp_dir, sample_zip_file):
-    Archive(sample_zip_file).extract(temp_dir)
-    actual = Storage(temp_dir).list_files(relative=True)
+def test_extract_zip(temp_dir, sample_zip_path):
+    Archive(sample_zip_path).extract(temp_dir)
+    actual = Storage(temp_dir).list(relative=True)
     expected = ['bar.txt', 'baz/foo.txt']
     assert sorted(actual) == sorted(expected)
