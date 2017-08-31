@@ -1,1 +1,1 @@
-A simple storage abstraction for interacting with files and directories on different backends.
+Manage files and directories on different storage backends.
