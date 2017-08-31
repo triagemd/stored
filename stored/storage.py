@@ -27,8 +27,8 @@ class Storage(object):
     def upload(self, input_path, archive=False):
         if archive:
             with TemporaryDirectory() as temp_dir:
-                archive_path = os.path.join(temp_dir, os.path.basename(self.url))
-                Archive(archive_path).create(input_path)
-                self.backend.upload(archive_path)
+                output_path = os.path.join(temp_dir, os.path.basename(self.url))
+                Archive(output_path).create(input_path)
+                self.backend.upload(output_path)
         else:
             self.backend.upload(input_path)

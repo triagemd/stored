@@ -1,5 +1,6 @@
 import tarfile
 import zipfile
+import shutil
 
 from .utils import ChangeDirectory
 
@@ -16,6 +17,13 @@ class Archive(object):
             self._extract_zip(output_dir)
         else:
             raise ValueError('unknown archive format in %s, unable to extract' % (self.path, ))
+
+    def create(self, input_path, format='zip'):
+        extension = '.%s' % (format, )
+        output_path = self.path
+        if output_path.endswith(extension):
+            output_path = output_path[:-1 * len(extension)]
+        shutil.make_archive(output_path, format, input_path)
 
     def _extract_targz(self, output_dir):
         tar = tarfile.open(self.path, 'r:gz')
