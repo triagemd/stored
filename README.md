@@ -1,0 +1,1 @@
+A simple storage abstraction for interacting with files and directories on different backends.
