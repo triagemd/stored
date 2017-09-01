@@ -15,20 +15,20 @@ class Storage(object):
     def list(self, relative=False):
         return self.backend.list(relative=relative)
 
-    def download(self, output_path, extract=False):
+    def sync_to(self, output_path, extract=False):
         if extract:
             with TemporaryDirectory() as temp_dir:
                 archive_path = os.path.join(temp_dir, os.path.basename(self.url))
-                self.backend.download(archive_path)
+                self.backend.sync_to(archive_path)
                 Archive(archive_path).extract(output_path)
         else:
-            self.backend.download(output_path)
+            self.backend.sync_to(output_path)
 
-    def upload(self, input_path, archive=False):
+    def sync_from(self, input_path, archive=False):
         if archive:
             with TemporaryDirectory() as temp_dir:
                 output_path = os.path.join(temp_dir, os.path.basename(self.url))
                 Archive(output_path).create(input_path)
-                self.backend.upload(output_path)
+                self.backend.sync_from(output_path)
         else:
-            self.backend.upload(input_path)
+            self.backend.sync_from(input_path)

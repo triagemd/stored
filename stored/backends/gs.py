@@ -24,14 +24,14 @@ class GoogleStorage(object):
             else:
                 yield os.path.join(self.url, blob.name)
 
-    def download(self, output_path):
+    def sync_to(self, output_path):
         with open(output_path, 'wb') as output_file:
             client = storage.Client()
             bucket = client.bucket(self.bucket)
             blob = bucket.blob(self.path)
             blob.download_to_file(output_file)
 
-    def upload(self, input_path):
+    def sync_from(self, input_path):
         client = storage.Client()
         bucket = client.bucket(self.bucket)
         blob = bucket.blob(self.path)

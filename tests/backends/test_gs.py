@@ -30,9 +30,9 @@ def test_list_relative(sample_gs_dir):
     assert sorted(actual) == sorted(expected)
 
 
-def test_download_file(temp_dir, sample_gs_file):
+def test_sync_to_file(temp_dir, sample_gs_file):
     output_path = os.path.join(temp_dir, os.path.basename(sample_gs_file))
-    GoogleStorage(sample_gs_file).download(output_path)
+    GoogleStorage(sample_gs_file).sync_to(output_path)
     actual = LocalFileStorage(temp_dir).list(relative=True)
     expected = ['foo.tar.gz', ]
     assert sorted(actual) == sorted(expected)

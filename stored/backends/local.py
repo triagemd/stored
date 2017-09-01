@@ -17,13 +17,13 @@ class LocalFileStorage(object):
                 matches.append(file_path)
         return matches
 
-    def download(self, output_path):
+    def sync_to(self, output_path):
         output_dir = os.path.dirname(output_path)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         shutil.copyfile(self.path, output_path)
 
-    def upload(self, input_path):
+    def sync_from(self, input_path):
         output_dir = os.path.dirname(self.path)
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)

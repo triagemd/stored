@@ -19,7 +19,7 @@ def sample_zip_path():
 @pytest.fixture
 def sample_local_dir():
     with TemporaryDirectory() as temp_dir:
-        Storage('tests/files/foo.tar.gz').download(temp_dir, extract=True)
+        Storage('tests/files/foo.tar.gz').sync_to(temp_dir, extract=True)
         yield temp_dir
 
 

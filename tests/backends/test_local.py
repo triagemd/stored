@@ -14,12 +14,20 @@ def touch(path):
         os.utime(path, None)
 
 
-def test_download_file(temp_dir, sample_local_path):
+def test_sync_to_file(temp_dir, sample_local_path):
     output_path = os.path.join(temp_dir, os.path.basename(sample_local_path))
-    LocalFileStorage(sample_local_path).download(output_path)
+    LocalFileStorage(sample_local_path).sync_to(output_path)
     actual = LocalFileStorage(temp_dir).list(relative=True)
     expected = ['foo.tar.gz', ]
     assert sorted(actual) == sorted(expected)
+
+
+# def test_sync_from_file(temp_dir, sample_local_path):
+#     output_path = os.path.join(temp_dir, os.path.basename(sample_local_path))
+#     LocalFileStorage(sample_local_path).sync_from(output_path)
+#     actual = LocalFileStorage(temp_dir).list(relative=True)
+#     expected = ['foo.tar.gz', ]
+#     assert sorted(actual) == sorted(expected)
 
 
 def test_list(temp_dir):

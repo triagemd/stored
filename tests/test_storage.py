@@ -19,7 +19,7 @@ def sample_local_zip_url():
 @pytest.fixture
 def sample_local_dir(sample_local_targz_url):
     with TemporaryDirectory() as temp_dir:
-        Storage(sample_local_targz_url).download(temp_dir, extract=True)
+        Storage(sample_local_targz_url).sync_to(temp_dir, extract=True)
         yield temp_dir
 
 
@@ -49,21 +49,21 @@ def test_list_files_relative(temp_dir):
     assert actual == expected
 
 
-def test_download_and_extract_targz(temp_dir, sample_local_targz_url):
-    Storage(sample_local_targz_url).download(temp_dir, extract=True)
+def test_sync_to_and_extract_targz(temp_dir, sample_local_targz_url):
+    Storage(sample_local_targz_url).sync_to(temp_dir, extract=True)
     actual = Storage(temp_dir).list(relative=True)
     expected = ['bar.txt', 'baz/foo.txt']
     assert sorted(actual) == sorted(expected)
 
 
-def test_download_and_extract_zip(temp_dir, sample_local_zip_url):
-    Storage(sample_local_zip_url).download(temp_dir, extract=True)
+def test_sync_to_and_extract_zip(temp_dir, sample_local_zip_url):
+    Storage(sample_local_zip_url).sync_to(temp_dir, extract=True)
     actual = Storage(temp_dir).list(relative=True)
     expected = ['bar.txt', 'baz/foo.txt']
     assert sorted(actual) == sorted(expected)
 
 
-def test_archive_and_upload(temp_dir, sample_local_dir):
+def test_and_sync_from_with_archive(temp_dir, sample_local_dir):
     output_path = os.path.join(temp_dir, 'foo.zip')
-    Storage(output_path).upload(sample_local_dir, archive=True)
+    Storage(output_path).sync_from(sample_local_dir, archive=True)
     assert os.path.exists(output_path)
