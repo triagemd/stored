@@ -18,13 +18,27 @@ class LocalFileStorage(object):
         return matches
 
     def sync_to(self, output_path):
-        output_dir = os.path.dirname(output_path)
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-        shutil.copyfile(self.path, output_path)
+        if os.path.isdir(output_path):
+            input_paths = self.list(relative=True)
+            output_paths = LocalFileStorage(output_path).list(relative=True)
+            new_paths = set(input_paths) - set(output_paths)
+            for path in new_paths:
+                LocalFileStorage(os.path.join(self.path, path)).sync_to(os.path.join(output_path, path))
+        else:
+            output_dir = os.path.dirname(output_path)
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+            shutil.copyfile(self.path, output_path)
 
     def sync_from(self, input_path):
-        output_dir = os.path.dirname(self.path)
-        if not os.path.exists(output_dir):
-            os.makedirs(output_dir)
-        shutil.copyfile(input_path, self.path)
+        if os.path.isdir(input_path):
+            input_paths = LocalFileStorage(input_path).list(relative=True)
+            output_paths = self.list(relative=True)
+            new_paths = set(input_paths) - set(output_paths)
+            for path in new_paths:
+                LocalFileStorage(os.path.join(self.path, path)).sync_from(os.path.join(input_path, path))
+        else:
+            output_dir = os.path.dirname(self.path)
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+            shutil.copyfile(input_path, self.path)

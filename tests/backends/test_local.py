@@ -1,6 +1,8 @@
 import pytest
 import os
 
+from backports.tempfile import TemporaryDirectory
+
 from stored.backends.local import LocalFileStorage
 
 
@@ -22,12 +24,23 @@ def test_sync_to_file(temp_dir, sample_local_path):
     assert sorted(actual) == sorted(expected)
 
 
-# def test_sync_from_file(temp_dir, sample_local_path):
-#     output_path = os.path.join(temp_dir, os.path.basename(sample_local_path))
-#     LocalFileStorage(sample_local_path).sync_from(output_path)
-#     actual = LocalFileStorage(temp_dir).list(relative=True)
-#     expected = ['foo.tar.gz', ]
-#     assert sorted(actual) == sorted(expected)
+def test_sync_to_directory(temp_dir):
+    with TemporaryDirectory() as input_dir:
+        touch(os.path.join(input_dir, 'foo.txt'))
+        os.makedirs(os.path.join(input_dir, 'bar'))
+        touch(os.path.join(input_dir, 'bar', 'baz.txt'))
+        LocalFileStorage(input_dir).sync_to(temp_dir)
+    actual = LocalFileStorage(temp_dir).list(relative=True)
+    expected = ['foo.txt', 'bar/baz.txt']
+    assert sorted(actual) == sorted(expected)
+
+
+def test_sync_from_file(temp_dir, sample_local_path):
+    output_path = os.path.join(temp_dir, os.path.basename(sample_local_path))
+    LocalFileStorage(output_path).sync_from(sample_local_path)
+    actual = LocalFileStorage(temp_dir).list(relative=True)
+    expected = ['foo.tar.gz', ]
+    assert sorted(actual) == sorted(expected)
 
 
 def test_list(temp_dir):

@@ -7,7 +7,7 @@ class HTTPStorage(object):
         self.url = url
 
     def list(self, relative=False):
-        raise NotImplementedError('list method is not implemented for HTTPStorage backend')
+        raise NotImplementedError('list is not implemented for HTTPStorage backend')
 
     def sync_to(self, output_path):
         with open(output_path, 'wb') as output_file:
@@ -19,4 +19,4 @@ class HTTPStorage(object):
                 raise ValueError(response)
 
     def sync_from(self, input_path):
-        raise NotImplementedError('upload method is not implemented for HTTPStorage backend')
+        raise NotImplementedError('sync_from is not implemented for HTTPStorage backend')
