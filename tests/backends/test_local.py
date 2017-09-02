@@ -24,6 +24,14 @@ def test_sync_to_file(temp_dir, sample_local_path):
     assert sorted(actual) == sorted(expected)
 
 
+def test_sync_to_file_nonexistent_input(temp_dir):
+    output_path = os.path.join(temp_dir, 'nonexistent_file')
+    LocalFileStorage('nonexistent_file').sync_to(output_path)
+    actual = LocalFileStorage(temp_dir).list(relative=True)
+    expected = []
+    assert sorted(actual) == sorted(expected)
+
+
 def test_sync_to_directory(temp_dir):
     with TemporaryDirectory() as input_dir:
         touch(os.path.join(input_dir, 'foo.txt'))
@@ -35,11 +43,44 @@ def test_sync_to_directory(temp_dir):
     assert sorted(actual) == sorted(expected)
 
 
+def test_sync_to_directory_nonexistent_input(temp_dir):
+    LocalFileStorage('nonexistent_dir').sync_to(temp_dir)
+    actual = LocalFileStorage(temp_dir).list(relative=True)
+    expected = []
+    assert sorted(actual) == sorted(expected)
+
+
+def test_sync_from_directory(temp_dir, sample_local_path):
+    with TemporaryDirectory() as input_dir:
+        touch(os.path.join(input_dir, 'foo.txt'))
+        os.makedirs(os.path.join(input_dir, 'bar'))
+        touch(os.path.join(input_dir, 'bar', 'baz.txt'))
+        LocalFileStorage(temp_dir).sync_from(input_dir)
+    actual = LocalFileStorage(temp_dir).list(relative=True)
+    expected = ['foo.txt', 'bar/baz.txt']
+    assert sorted(actual) == sorted(expected)
+
+
+def test_sync_from_directory_nonexistent_input(temp_dir):
+    LocalFileStorage(temp_dir).sync_from('nonexistent_dir')
+    actual = LocalFileStorage(temp_dir).list(relative=True)
+    expected = []
+    assert sorted(actual) == sorted(expected)
+
+
 def test_sync_from_file(temp_dir, sample_local_path):
     output_path = os.path.join(temp_dir, os.path.basename(sample_local_path))
     LocalFileStorage(output_path).sync_from(sample_local_path)
     actual = LocalFileStorage(temp_dir).list(relative=True)
     expected = ['foo.tar.gz', ]
+    assert sorted(actual) == sorted(expected)
+
+
+def test_sync_from_file_nonexistent_input(temp_dir):
+    output_path = os.path.join(temp_dir, 'nonexistent_file')
+    LocalFileStorage(output_path).sync_from('nonexistent_file')
+    actual = LocalFileStorage(temp_dir).list(relative=True)
+    expected = []
     assert sorted(actual) == sorted(expected)
 
 
