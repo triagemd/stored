@@ -20,8 +20,10 @@ class LocalFileStorage(object):
     def sync_to(self, output_path):
         if not os.path.exists(self.path):
             return
-        if os.path.isdir(output_path):
+        if os.path.isdir(self.path):
             input_paths = self.list(relative=True)
+            if not os.path.exists(output_path):
+                os.makedirs(output_path)
             output_paths = LocalFileStorage(output_path).list(relative=True)
             new_paths = set(input_paths) - set(output_paths)
             for path in new_paths:
@@ -37,6 +39,8 @@ class LocalFileStorage(object):
             return
         if os.path.isdir(input_path):
             input_paths = LocalFileStorage(input_path).list(relative=True)
+            if not os.path.exists(self.path):
+                os.makedirs(self.path)
             output_paths = self.list(relative=True)
             new_paths = set(input_paths) - set(output_paths)
             for path in new_paths:
