@@ -21,6 +21,8 @@ class Archive(object):
         handler = self.extract_handlers.get(self.extension)
         if handler is None:
             raise ValueError('unknown archive format in %s, unable to extract' % (self.path, ))
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
         handler(output_dir)
 
     def create(self, input_path, format='zip'):
@@ -28,6 +30,9 @@ class Archive(object):
         output_path = self.path
         if output_path.endswith(extension):
             output_path = output_path[:-1 * len(extension)]
+        output_dir = os.path.dirname(output_path)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
         shutil.make_archive(output_path, format, input_path)
 
     def _extract_targz(self, output_dir):
