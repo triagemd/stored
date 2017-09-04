@@ -15,8 +15,10 @@ class Storage(object):
     def list(self, relative=False):
         return self.backend.list(relative=relative)
 
-    def sync_to(self, output_path, extract=False):
-        if extract:
+    def sync_to(self, output_path, extract=True):
+        if self.url == output_path:
+            return
+        if extract and self._should_extract(output_path):
             with TemporaryDirectory() as temp_dir:
                 archive_path = os.path.join(temp_dir, os.path.basename(self.url))
                 self.backend.sync_to(archive_path)
@@ -24,11 +26,19 @@ class Storage(object):
         else:
             self.backend.sync_to(output_path)
 
-    def sync_from(self, input_path, archive=False):
-        if archive:
+    def sync_from(self, input_path, archive=True):
+        if self.url == input_path:
+            return
+        if archive and self._should_archive(input_path):
             with TemporaryDirectory() as temp_dir:
                 output_path = os.path.join(temp_dir, os.path.basename(self.url))
                 Archive(output_path).create(input_path)
                 self.backend.sync_from(output_path)
         else:
             self.backend.sync_from(input_path)
+
+    def _should_extract(self, output_path):
+        return Archive(self.url).valid and os.path.isdir(output_path)
+
+    def _should_archive(self, input_path):
+        return os.path.isdir(input_path) and Archive(self.url).valid
