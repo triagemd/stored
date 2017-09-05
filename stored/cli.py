@@ -1,7 +1,5 @@
 import click
-
-from .sync import sync
-from .list_files import list_files
+import stored
 
 
 @click.group()
@@ -13,12 +11,12 @@ def cli():
 @click.argument('input')
 @click.argument('output')
 def sync(input, output):
-    click.echo('Synching...')
-    sync(input, output)
+    click.echo('Syncing...')
+    stored.sync(input, output)
 
 
 @cli.command(help='List files in target storage URL')
 @click.argument('target')
 def list(target):
-    for file in list_files(target):
+    for file in stored.list_files(target):
         click.echo(file)

@@ -2,10 +2,12 @@ import os
 
 from backports.tempfile import TemporaryDirectory
 
+from .auth import with_backend_auth
 from .archive import Archive
 from .backends import get_backend, LocalFileStorage
 
 
+@with_backend_auth
 def sync(input_path, output_path):
     input_storage = get_backend(input_path)
     output_storage = get_backend(output_path)
