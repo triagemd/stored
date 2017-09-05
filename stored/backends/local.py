@@ -20,7 +20,7 @@ class LocalFileStorage(object):
     def sync_to(self, output_path):
         if not os.path.exists(self.path):
             return
-        if os.path.isdir(self.path):
+        if self.is_dir(self.path):
             input_paths = self.list(relative=True)
             if not os.path.exists(output_path):
                 os.makedirs(output_path)
@@ -37,7 +37,7 @@ class LocalFileStorage(object):
     def sync_from(self, input_path):
         if not os.path.exists(input_path):
             return
-        if os.path.isdir(input_path):
+        if self.is_dir(input_path):
             input_paths = LocalFileStorage(input_path).list(relative=True)
             if not os.path.exists(self.path):
                 os.makedirs(self.path)
@@ -50,3 +50,8 @@ class LocalFileStorage(object):
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
             shutil.copyfile(input_path, self.path)
+
+    def is_dir(self, path=None):
+        if path is None:
+            path = self.path
+        return os.path.isdir(path) or path.endswith('/')

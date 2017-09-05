@@ -3,7 +3,7 @@ import os
 from backports.tempfile import TemporaryDirectory
 
 from .archive import Archive
-from .backends import get_backend
+from .backends import get_backend, LocalFileStorage
 
 
 class Storage(object):
@@ -38,7 +38,7 @@ class Storage(object):
             self.backend.sync_from(input_path)
 
     def _should_extract(self, output_path):
-        return Archive(self.url).valid and (os.path.isdir(output_path) or output_path.endswith('/'))
+        return Archive(self.url).valid and LocalFileStorage(output_path).is_dir()
 
     def _should_archive(self, input_path):
-        return (os.path.isdir(input_path) or input_path.endswith('/')) and Archive(self.url).valid
+        return Archive(self.url).valid and LocalFileStorage(input_path).is_dir()

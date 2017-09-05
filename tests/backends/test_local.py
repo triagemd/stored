@@ -43,6 +43,18 @@ def test_sync_to_directory(temp_dir):
     assert sorted(actual) == sorted(expected)
 
 
+def test_sync_to_directory_creates_output_dir(temp_dir):
+    output_dir = os.path.join(temp_dir, 'inner_dir')
+    with TemporaryDirectory() as input_dir:
+        touch(os.path.join(input_dir, 'foo.txt'))
+        os.makedirs(os.path.join(input_dir, 'bar'))
+        touch(os.path.join(input_dir, 'bar', 'baz.txt'))
+        LocalFileStorage(input_dir).sync_to(output_dir)
+    actual = LocalFileStorage(temp_dir).list(relative=True)
+    expected = ['inner_dir/foo.txt', 'inner_dir/bar/baz.txt']
+    assert sorted(actual) == sorted(expected)
+
+
 def test_sync_to_directory_nonexistent_input(temp_dir):
     LocalFileStorage('nonexistent_dir').sync_to(temp_dir)
     actual = LocalFileStorage(temp_dir).list(relative=True)
@@ -103,3 +115,9 @@ def test_list_relative(temp_dir):
     actual = LocalFileStorage(temp_dir).list(relative=True)
     expected = ['foo.jpg', 'bar/baz-1.jpg', 'bar/baz-2.jpg']
     assert actual == expected
+
+
+def test_is_dir(sample_local_path):
+    assert LocalFileStorage(os.path.dirname(sample_local_path)).is_dir()
+    assert not LocalFileStorage(sample_local_path).is_dir()
+    assert LocalFileStorage(sample_local_path + '/').is_dir()

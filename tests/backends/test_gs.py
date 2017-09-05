@@ -43,3 +43,8 @@ def test_sync_to_directory(temp_dir, sample_gs_dir):
     actual = LocalFileStorage(temp_dir).list(relative=True)
     expected = ['foo.tar.gz', 'foo.zip']
     assert sorted(actual) == sorted(expected)
+
+def test_is_dir(sample_gs_dir):
+    assert GoogleStorage(sample_gs_dir).is_dir()
+    assert not GoogleStorage(os.path.join(sample_gs_dir, 'foo.zip')).is_dir()
+    assert GoogleStorage(os.path.join(sample_gs_dir, 'foo.zip/')).is_dir()
