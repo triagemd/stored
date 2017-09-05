@@ -3,12 +3,15 @@ import os
 from backports.tempfile import TemporaryDirectory
 
 from .archive import Archive
-from .backends import get_backend
+from .backends import get_backend, LocalFileStorage
 
 
 def sync(input_path, output_path):
     input_storage = get_backend(input_path)
     output_storage = get_backend(output_path)
+
+    if not isinstance(input_storage, LocalFileStorage) and not isinstance(output_storage, LocalFileStorage):
+        raise ValueError('either input_path or output_path must be local file system')
 
     if input_path == output_path:
         return
