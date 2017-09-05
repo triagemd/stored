@@ -1,3 +1,4 @@
+import os
 import tarfile
 import zipfile
 import shutil
@@ -9,20 +10,29 @@ class Archive(object):
 
     def __init__(self, path):
         self.path = path
+        self.extract_handlers = {
+            '.tar.gz': self._extract_targz,
+            '.zip': self._extract_zip,
+        }
+        self.extension = self._extension(self.path)
+        self.valid = self.extension in self.extract_handlers
 
     def extract(self, output_dir):
-        if self.path.lower().endswith('.tar.gz'):
-            self._extract_targz(output_dir)
-        elif self.path.lower().endswith('.zip'):
-            self._extract_zip(output_dir)
-        else:
+        handler = self.extract_handlers.get(self.extension)
+        if handler is None:
             raise ValueError('unknown archive format in %s, unable to extract' % (self.path, ))
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+        handler(output_dir)
 
     def create(self, input_path, format='zip'):
         extension = '.%s' % (format, )
         output_path = self.path
         if output_path.endswith(extension):
             output_path = output_path[:-1 * len(extension)]
+        output_dir = os.path.dirname(output_path)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
         shutil.make_archive(output_path, format, input_path)
 
     def _extract_targz(self, output_dir):
@@ -33,3 +43,8 @@ class Archive(object):
     def _extract_zip(self, output_dir):
         with zipfile.ZipFile(self.path, 'r') as zip_file:
             zip_file.extractall(output_dir)
+
+    def _extension(self, path):
+        if path.endswith('.tar.gz'):
+            return '.tar.gz'
+        return os.path.splitext(path)[1]

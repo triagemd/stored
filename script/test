@@ -4,9 +4,7 @@ ARGS="${@:-tests/}"
 set -e
 
 # Set up public GC creds.
-mkdir -p .cache/test
-base64 --decode tests/files/gcloud.json.enc > .cache/test/gcloud.json
-export GOOGLE_APPLICATION_CREDENTIALS=".cache/test/gcloud.json"
+export GCLOUD_ACCOUNT=$(cat tests/files/gcloud.json.enc)
 
 # Run tests and lint checks.
 PYTHONPATH="." pytest $ARGS

@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='stored',
-    version='0.0.6',
+    version='0.0.19',
     description='Manage files and directories on different storage backends.',
     author='Triage Technologies Inc.',
     author_email='ai@triage.com',
@@ -17,5 +17,10 @@ setup(
         'backports.tempfile',
         'requests',
         'google-cloud-storage',
-    ]
+        'click',
+    ],
+    entry_points='''
+        [console_scripts]
+        stored=stored.cli:cli
+    ''',
 )

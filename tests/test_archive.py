@@ -3,7 +3,7 @@ import os
 
 from backports.tempfile import TemporaryDirectory
 
-from stored import Archive, Storage
+from stored import Archive, sync, list_files
 
 
 @pytest.fixture
@@ -19,20 +19,20 @@ def sample_zip_path():
 @pytest.fixture
 def sample_local_dir():
     with TemporaryDirectory() as temp_dir:
-        Storage('tests/files/foo.tar.gz').sync_to(temp_dir, extract=True)
+        sync('tests/files/foo.tar.gz', temp_dir)
         yield temp_dir
 
 
 def test_extract_targz(temp_dir, sample_targz_path):
     Archive(sample_targz_path).extract(temp_dir)
-    actual = Storage(temp_dir).list(relative=True)
+    actual = list_files(temp_dir, relative=True)
     expected = ['bar.txt', 'baz/foo.txt']
     assert sorted(actual) == sorted(expected)
 
 
 def test_extract_zip(temp_dir, sample_zip_path):
     Archive(sample_zip_path).extract(temp_dir)
-    actual = Storage(temp_dir).list(relative=True)
+    actual = list_files(temp_dir, relative=True)
     expected = ['bar.txt', 'baz/foo.txt']
     assert sorted(actual) == sorted(expected)
 
