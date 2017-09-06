@@ -54,4 +54,5 @@ class LocalFileStorage(object):
     def is_dir(self, path=None):
         if path is None:
             path = self.path
-        return os.path.isdir(path) or path.endswith('/')
+        _, extension = os.path.splitext(path)
+        return os.path.isdir(path) or not extension or path.endswith('/')

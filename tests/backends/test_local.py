@@ -121,3 +121,4 @@ def test_is_dir(sample_local_path):
     assert LocalFileStorage(os.path.dirname(sample_local_path)).is_dir()
     assert not LocalFileStorage(sample_local_path).is_dir()
     assert LocalFileStorage(sample_local_path + '/').is_dir()
+    assert LocalFileStorage(sample_local_path + '/foo').is_dir()

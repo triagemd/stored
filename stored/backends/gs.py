@@ -77,8 +77,5 @@ class GoogleStorage(object):
                 blob.upload_from_filename(filename=input_path)
 
     def is_dir(self, paths=None):
-        if self.url.endswith('/'):
-            return True
-        if paths is None:
-            paths = list(self.list())
-        return len(paths) > 1 and paths[0] != self.url
+        _, extension = os.path.splitext(self.url)
+        return not extension or self.url.endswith('/')
