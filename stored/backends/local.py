@@ -55,4 +55,4 @@ class LocalFileStorage(object):
         if path is None:
             path = self.path
         _, extension = os.path.splitext(path)
-        return os.path.isdir(path) or not extension or path.endswith('/')
+        return os.path.isdir(path) or len(extension) == 0 or path.endswith('/')

@@ -77,4 +77,4 @@ class GoogleStorage(object):
     def is_dir(self, path=None):
         path = path or self.url
         _, extension = os.path.splitext(path)
-        return not extension or path.endswith('/')
+        return len(extension) == 0 or path.endswith('/')
