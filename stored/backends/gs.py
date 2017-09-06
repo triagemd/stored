@@ -48,10 +48,9 @@ class GoogleStorage(object):
                     yield os.path.join(self.url, blob.name)
 
     def sync_to(self, output_path):
-        input_paths = list(self.list(relative=True))
-        if self.is_dir(input_paths):
+        if self.is_dir():
             output_paths = LocalFileStorage(output_path).list(relative=True)
-            new_paths = set(input_paths) - set(output_paths)
+            new_paths = set(self.list(relative=True)) - set(output_paths)
             for path in new_paths:
                 GoogleStorage(os.path.join(self.url, path)).sync_to(os.path.join(output_path, path))
         else:
@@ -63,10 +62,9 @@ class GoogleStorage(object):
                     blob.download_to_file(output_file)
 
     def sync_from(self, input_path):
-        output_paths = list(self.list(relative=True))
-        if self.is_dir(output_paths):
+        if self.is_dir(input_path):
             input_paths = LocalFileStorage(input_path).list(relative=True)
-            new_paths = set(input_paths) - set(output_paths)
+            new_paths = set(input_paths) - set(self.list(relative=True))
             for path in new_paths:
                 GoogleStorage(os.path.join(self.url, path)).sync_from(os.path.join(input_path, path))
         else:
@@ -76,6 +74,7 @@ class GoogleStorage(object):
                 blob = bucket.blob(self.path)
                 blob.upload_from_filename(filename=input_path)
 
-    def is_dir(self, paths=None):
-        _, extension = os.path.splitext(self.url)
-        return not extension or self.url.endswith('/')
+    def is_dir(self, path=None):
+        path = path or self.url
+        _, extension = os.path.splitext(path)
+        return not extension or path.endswith('/')
