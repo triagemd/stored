@@ -104,4 +104,3 @@ def test_and_sync_to_with_archive(temp_dir, sample_local_dir):
     output_path = os.path.join(temp_dir, 'foo.zip')
     sync(sample_local_dir, output_path)
     assert os.path.isfile(output_path)
-
