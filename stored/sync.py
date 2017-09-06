@@ -23,8 +23,8 @@ def sync(input_path, output_path):
             Archive(archive_path).extract(output_path)
     elif Archive(output_path).valid and input_storage.is_dir():
         with TemporaryDirectory() as temp_dir:
-            output_path = os.path.join(temp_dir, os.path.basename(input_path))
-            Archive(output_path).create(input_path)
-            output_storage.sync_from(input_path)
+            archive_path = os.path.join(temp_dir, os.path.basename(output_path))
+            Archive(archive_path).create(input_path)
+            output_storage.sync_from(archive_path)
     else:
         input_storage.sync_to(output_path)
