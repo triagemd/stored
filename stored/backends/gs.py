@@ -20,6 +20,8 @@ def auth():
             auth_file_path = os.path.join(temp_dir, 'auth.json')
             with open(auth_file_path, 'w') as auth_file:
                 auth_file.write(base64.b64decode(encoded_auth).decode())
+                auth_file.flush()
+                os.fsync(auth_file.fileno())
             os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = auth_file_path
             yield
     else:
