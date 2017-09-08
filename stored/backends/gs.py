@@ -1,7 +1,7 @@
 import os
-import tempfile
 import base64
 
+from backports.tempfile import TemporaryDirectory
 from contextlib import contextmanager
 from google.cloud import storage
 
@@ -16,10 +16,11 @@ def auth():
         return
     encoded_auth = os.environ.get('GCLOUD_ACCOUNT')
     if encoded_auth:
-        with tempfile.NamedTemporaryFile() as auth_file:
-            auth_file.write(base64.b64decode(encoded_auth))
-            auth_file.flush()
-            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = auth_file.name
+        with TemporaryDirectory() as temp_dir:
+            auth_file_path = os.path.join(temp_dir, 'auth.json')
+            with open(auth_file_path, 'w') as auth_file:
+                auth_file.write(base64.b64decode(encoded_auth).decode())
+            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = auth_file_path
             yield
     else:
         yield
