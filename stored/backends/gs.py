@@ -1,7 +1,7 @@
 import os
+import tempfile
 import base64
 
-from backports.tempfile import TemporaryDirectory
 from contextlib import contextmanager
 from google.cloud import storage
 
@@ -9,23 +9,13 @@ from .local import LocalFileStorage
 
 
 @contextmanager
-def auth():
-    auth_file_path = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
-    if auth_file_path and os.path.exists(auth_file_path):
-        yield
-        return
+def authed_client():
     encoded_auth = os.environ.get('GCLOUD_ACCOUNT')
-    if encoded_auth:
-        with TemporaryDirectory() as temp_dir:
-            auth_file_path = os.path.join(temp_dir, 'auth.json')
-            with open(auth_file_path, 'w') as auth_file:
-                auth_file.write(base64.b64decode(encoded_auth).decode())
-                auth_file.flush()
-                os.fsync(auth_file.fileno())
-            os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = auth_file_path
-            yield
-    else:
-        yield
+    with tempfile.NamedTemporaryFile() as auth_file:
+        auth_file.write(base64.b64decode(encoded_auth))
+        auth_file.flush()
+        os.fsync(auth_file.fileno())
+        yield storage.Client.from_service_account_json(auth_file.name)
 
 
 class GoogleStorage(object):
@@ -40,8 +30,7 @@ class GoogleStorage(object):
             self.path = ''
 
     def list(self, relative=False):
-        with auth():
-            client = storage.Client()
+        with authed_client() as client:
             bucket = client.bucket(self.bucket)
             blobs = bucket.list_blobs(prefix=self.path)
             for blob in blobs:
@@ -58,8 +47,7 @@ class GoogleStorage(object):
                 GoogleStorage(os.path.join(self.url, path)).sync_to(os.path.join(output_path, path))
         else:
             with open(output_path, 'wb') as output_file:
-                with auth():
-                    client = storage.Client()
+                with authed_client() as client:
                     bucket = client.bucket(self.bucket)
                     blob = bucket.blob(self.path)
                     blob.download_to_file(output_file)
@@ -71,8 +59,7 @@ class GoogleStorage(object):
             for path in new_paths:
                 GoogleStorage(os.path.join(self.url, path)).sync_from(os.path.join(input_path, path))
         else:
-            with auth():
-                client = storage.Client()
+            with authed_client() as client:
                 bucket = client.bucket(self.bucket)
                 blob = bucket.blob(self.path)
                 blob.upload_from_filename(filename=input_path)
