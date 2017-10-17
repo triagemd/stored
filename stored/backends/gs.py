@@ -46,6 +46,9 @@ class GoogleStorage(object):
             for path in new_paths:
                 GoogleStorage(os.path.join(self.url, path)).sync_to(os.path.join(output_path, path))
         else:
+            output_dir = os.path.dirname(output_path)
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
             with open(output_path, 'wb') as output_file:
                 with authed_client() as client:
                     bucket = client.bucket(self.bucket)
