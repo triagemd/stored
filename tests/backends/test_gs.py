@@ -38,6 +38,14 @@ def test_sync_to_file(temp_dir, sample_gs_file):
     assert sorted(actual) == sorted(expected)
 
 
+def test_sync_to_file_with_nonexistent_dir(temp_dir, sample_gs_file):
+    output_path = os.path.join(temp_dir, 'inner_dir', os.path.basename(sample_gs_file))
+    GoogleStorage(sample_gs_file).sync_to(output_path)
+    actual = LocalFileStorage(temp_dir).list(relative=True)
+    expected = ['inner_dir/foo.tar.gz', ]
+    assert sorted(actual) == sorted(expected)
+
+
 def test_sync_to_directory(temp_dir, sample_gs_dir):
     GoogleStorage(sample_gs_dir).sync_to(temp_dir)
     actual = LocalFileStorage(temp_dir).list(relative=True)
