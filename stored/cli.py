@@ -11,7 +11,7 @@ def cli():
 @click.argument('input')
 @click.argument('output')
 def sync(input, output):
-    click.echo('Syncing...')
+    click.echo('Syncing %s to %s...' % (input, output))
     stored.sync(input, output)
 
 
