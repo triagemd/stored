@@ -39,3 +39,8 @@ def test_list(temp_dir):
 def test_list_relative(temp_dir):
     with pytest.raises(NotImplementedError):
         HTTPStorage('foo').list(relative=True)
+
+
+def test_is_dir_always_false():
+    assert not HTTPStorage('foo.zip').is_dir()
+    assert not HTTPStorage('foo').is_dir()

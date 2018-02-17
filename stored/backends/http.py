@@ -20,3 +20,6 @@ class HTTPStorage(object):
 
     def sync_from(self, input_path):
         raise NotImplementedError('sync_from is not implemented for HTTPStorage backend')
+
+    def is_dir(self):
+        return False
