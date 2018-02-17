@@ -56,6 +56,14 @@ def test_sync_to_dirs(temp_dir, sample_local_dir):
     assert sorted(actual) == sorted(expected)
 
 
+def test_sync_to_archives_without_unzip(temp_dir, sample_local_zip_url):
+    temp_file = os.path.join(temp_dir, os.path.basename(sample_local_zip_url))
+    sync(sample_local_zip_url, temp_file)
+    actual = list_files(temp_dir, relative=True)
+    expected = ['foo.zip']
+    assert sorted(actual) == sorted(expected)
+
+
 def test_sync_to_dirs_some_existing_files(temp_dir, sample_local_dir):
     bar_path = os.path.join(temp_dir, 'bar.txt')
     touch(bar_path)
