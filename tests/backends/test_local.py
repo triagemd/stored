@@ -122,3 +122,7 @@ def test_is_dir(sample_local_path):
     assert not LocalFileStorage(sample_local_path).is_dir()
     assert LocalFileStorage(sample_local_path + '/').is_dir()
     assert LocalFileStorage(sample_local_path + '/foo').is_dir()
+
+
+def test_filename():
+    assert LocalFileStorage('/foo/bar.zip').filename == 'bar.zip'

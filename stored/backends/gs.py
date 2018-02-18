@@ -28,6 +28,7 @@ class GoogleStorage(object):
         else:
             self.bucket = url
             self.path = ''
+        self.filename = os.path.basename(self.path)
 
     def list(self, relative=False):
         with authed_client() as client:

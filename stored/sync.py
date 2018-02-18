@@ -16,14 +16,14 @@ def sync(input_path, output_path):
     if input_path == output_path:
         return
 
-    if Archive(input_path).valid and output_storage.is_dir():
+    if Archive(input_storage.filename).valid and output_storage.is_dir():
         with TemporaryDirectory() as temp_dir:
-            archive_path = os.path.join(temp_dir, os.path.basename(input_path))
+            archive_path = os.path.join(temp_dir, input_storage.filename)
             input_storage.sync_to(archive_path)
             Archive(archive_path).extract(output_path)
-    elif Archive(output_path).valid and input_storage.is_dir():
+    elif Archive(output_storage.filename).valid and input_storage.is_dir():
         with TemporaryDirectory() as temp_dir:
-            archive_path = os.path.join(temp_dir, os.path.basename(output_path))
+            archive_path = os.path.join(temp_dir, output_storage.filename)
             Archive(archive_path).create(input_path)
             output_storage.sync_from(archive_path)
     else:
