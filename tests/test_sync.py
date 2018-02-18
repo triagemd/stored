@@ -18,6 +18,11 @@ def sample_local_zip_url():
 
 
 @pytest.fixture
+def sample_http_url_with_query_string():
+    return 'https://storage.googleapis.com/stored-http-01de4705-5b30-4631-b04e-c987c1476c4a/foo.zip?bar&baz.com&foo'
+
+
+@pytest.fixture
 def sample_local_dir(sample_local_targz_url):
     with TemporaryDirectory() as temp_dir:
         sync(sample_local_targz_url, temp_dir)
@@ -112,3 +117,10 @@ def test_and_sync_to_with_archive(temp_dir, sample_local_dir):
     output_path = os.path.join(temp_dir, 'foo.zip')
     sync(sample_local_dir, output_path)
     assert os.path.isfile(output_path)
+
+
+def test_sync_to_and_extract_zip_from_http_url_with_query_string(temp_dir, sample_http_url_with_query_string):
+    sync(sample_http_url_with_query_string, temp_dir)
+    actual = list_files(temp_dir, relative=True)
+    expected = ['bar.txt', 'baz/foo.txt']
+    assert sorted(actual) == sorted(expected)

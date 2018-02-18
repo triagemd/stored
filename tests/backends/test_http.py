@@ -44,3 +44,9 @@ def test_list_relative(temp_dir):
 def test_is_dir_always_false():
     assert not HTTPStorage('foo.zip').is_dir()
     assert not HTTPStorage('foo').is_dir()
+
+
+def test_filename():
+    assert HTTPStorage('http://example.com/foo/bar.zip?baz').filename == 'bar.zip'
+    assert HTTPStorage('http://example.com/foo.zip?bar.com&baz').filename == 'foo.zip'
+    assert HTTPStorage('http://example.com/foo.tar.gz?foo').filename == 'foo.tar.gz'

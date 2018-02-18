@@ -6,6 +6,7 @@ class LocalFileStorage(object):
 
     def __init__(self, path):
         self.path = path
+        self.filename = os.path.basename(path)
 
     def list(self, relative=False):
         matches = []

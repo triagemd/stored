@@ -58,3 +58,7 @@ def test_is_dir(sample_gs_dir):
     assert not GoogleStorage(os.path.join(sample_gs_dir, 'foo.zip')).is_dir()
     assert GoogleStorage(os.path.join(sample_gs_dir, 'foo.zip/')).is_dir()
     assert GoogleStorage(os.path.join(sample_gs_dir, 'foo')).is_dir()
+
+
+def test_filename():
+    assert GoogleStorage('gs://example.com/foo/bar.zip').filename == 'bar.zip'
