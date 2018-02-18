@@ -3,6 +3,8 @@ import tarfile
 import zipfile
 import shutil
 
+from urllib.parse import urlparse
+
 from .utils import ChangeDirectory
 
 
@@ -45,6 +47,8 @@ class Archive(object):
             zip_file.extractall(output_dir)
 
     def _extension(self, path):
+        if '://' in path:
+            path = urlparse(path).path
         if path.endswith('.tar.gz'):
             return '.tar.gz'
         return os.path.splitext(path)[1]
