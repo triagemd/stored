@@ -41,3 +41,9 @@ def test_create_zip(temp_dir, sample_local_dir):
     output_file = os.path.join(temp_dir, 'foo.zip')
     Archive(output_file).create(sample_local_dir)
     assert os.path.exists(output_file)
+
+
+def test_url_extension():
+    assert '.zip' == Archive('http://example.com/foo/bar.zip?baz').extension
+    assert '.zip' == Archive('http://example.com/foo.zip?bar.com&baz').extension
+    assert '.tar.gz' == Archive('http://example.com/foo.tar.gz?foo').extension
