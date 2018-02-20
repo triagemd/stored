@@ -7,5 +7,11 @@ set -e
 export GCLOUD_ACCOUNT=$(cat tests/files/gcloud.json.enc)
 
 # Run tests and lint checks.
-PYTHONPATH="." pytest $ARGS
-flake8 --max-line-length 50000 stored
+PYTHONPATH="." pytest --cov=./ $ARGS
+flake8 --max-line-length 50000 stored tests
+
+# Upload coverage for CI.
+if [ -n "$CI" ]; then
+  pip install codecov
+  codecov
+fi
