@@ -17,6 +17,9 @@ class HTTPStorage(object):
         raise NotImplementedError('list is not implemented for HTTPStorage backend')
 
     def sync_to(self, output_path):
+        output_dir = os.path.dirname(output_path)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
         with open(output_path, 'wb') as output_file:
             response = requests.get(self.url, stream=True)
             if response.status_code == 200:
