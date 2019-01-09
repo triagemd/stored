@@ -7,7 +7,7 @@ from stored.backends.gs import GoogleStorage
 
 @pytest.fixture
 def sample_gs_dir():
-    return 'gs://stored-gs-5d45f99e-77ba-4b79-a0d5-12b1d4608ec6'
+    return 'gs://stored-gs-5d45f99e-77ba-4b79-a0d5-12b1d4608ec6/'
 
 
 @pytest.fixture
@@ -57,7 +57,7 @@ def test_is_dir(sample_gs_dir):
     assert GoogleStorage(sample_gs_dir).is_dir()
     assert not GoogleStorage(os.path.join(sample_gs_dir, 'foo.zip')).is_dir()
     assert GoogleStorage(os.path.join(sample_gs_dir, 'foo.zip/')).is_dir()
-    assert GoogleStorage(os.path.join(sample_gs_dir, 'foo')).is_dir()
+    assert GoogleStorage(os.path.join(sample_gs_dir, 'foo/')).is_dir()
 
 
 def test_filename():

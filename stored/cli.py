@@ -10,9 +10,10 @@ def cli():
 @cli.command(help='Sync from an input to output')
 @click.argument('input')
 @click.argument('output')
-def sync(input, output):
+@click.option('--force-unpack', is_flag=True)
+def sync(input, output, force_unpack):
     click.echo('Syncing %s to %s...' % (input, output))
-    stored.sync(input, output)
+    stored.sync(input, output, force_unpack=force_unpack)
 
 
 @cli.command(help='List files in target storage URL')

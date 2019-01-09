@@ -17,10 +17,14 @@ class Archive(object):
         self.extension = self._extension(self.path)
         self.valid = self.extension in self.extract_handlers
 
-    def extract(self, output_dir):
+    def extract(self, output_dir, force_zip=False):
         handler = self.extract_handlers.get(self.extension)
         if handler is None:
-            raise ValueError('unknown archive format in %s, unable to extract' % (self.path, ))
+            if force_zip:
+                handler = self.extract_handlers['.zip']
+            else:
+                raise ValueError('unknown archive format in %s, unable to extract' % (self.path, ))
+
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         handler(output_dir)

@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='stored',
-    version='0.0.33',
+    version='1.0.2',
     description='Manage files and directories on different storage backends.',
     author='Triage Technologies Inc.',
     author_email='ai@triage.com',
